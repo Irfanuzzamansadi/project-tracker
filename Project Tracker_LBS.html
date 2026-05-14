@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Axentec × Robi | LBS Phase-2 Command Center (Updated 26 Apr)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f4f9;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      padding: 2rem 1.5rem;
+      color: #0a1c2f;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      margin-bottom: 2rem;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    .badge {
+      background: #e9edf2;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1e3a5f;
+    }
+    .badge-primary {
+      background: #0f2b3d;
+      color: white;
+    }
+    .badge-warning {
+      background: #fef3c7;
+      color: #b85c00;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0a2b3e, #1c6e8f);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .subhead {
+      font-size: 1rem;
+      color: #4a627a;
+      border-left: 3px solid #2c8cbb;
+      padding-left: 1rem;
+      margin-top: 0.25rem;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid #cfdfed;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: all 0.2s;
+      color: #2c4c6e;
+    }
+    .tab-btn.active {
+      background: #ffffff;
+      color: #136b9c;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid #cbdde9;
+    }
+    .tab-content {
+      display: none;
+      animation: fade 0.2s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(5px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* Roadmap styles */
+    .roadmap-container {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .overall-progress-header {
+      background: linear-gradient(135deg, #136b9c, #0e4d6e);
+      border-radius: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      color: white;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .progress-bar-big {
+      flex: 1;
+      height: 12px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #4ade80;
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+    .eta-badge {
+      background: #fbbf24;
+      color: #1e3a5f;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .timeline-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .step-card {
+      background: #fafcff;
+      border: 1px solid #e2edf7;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    .step-card.completed { border-left: 5px solid #22c55e; background: #f0fdf4; }
+    .step-card.blocked { border-left: 5px solid #ef4444; background: #fef2f2; }
+    .step-card.in-progress { border-left: 5px solid #f59e0b; background: #fffbeb; }
+    .step-header {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+      cursor: pointer;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: #e2edf7;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+    .step-card.completed .step-number { background: #22c55e; color: white; }
+    .step-card.in-progress .step-number { background: #f59e0b; color: white; }
+    .step-card.blocked .step-number { background: #ef4444; color: white; }
+    .step-info { flex: 1; }
+    .step-title { font-weight: 700; font-size: 1.1rem; }
+    .step-detail { padding: 0 1.2rem 1rem 1.2rem; border-top: 1px solid #e2edf7; margin-top: 0.5rem; display: none; }
+    .step-detail.show { display: block; }
+    .task-list { list-style: none; margin-top: 0.8rem; }
+    .task-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px solid #eef3fc; }
+    .task-status { width: 24px; height: 24px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+    .task-status.done { background: #22c55e; color: white; }
+    .task-status.progress { background: #f59e0b; color: white; }
+    .task-status.pending { background: #cbd5e1; color: #475569; }
+    .task-status.blocked { background: #ef4444; color: white; }
+    .critical-path { background: #fef3c7; border-radius: 1rem; padding: 1.2rem; margin-top: 1.5rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .stat-card { background: white; border-radius: 1rem; padding: 1rem; border: 1px solid #e2edf7; }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: #136b9c; }
+
+    /* Table styles */
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 1.2rem; overflow: hidden; }
+    th, td { text-align: left; padding: 0.9rem 0.8rem; border-bottom: 1px solid #e9edf2; vertical-align: top; }
+    th { background: #f8fafd; font-weight: 600; color: #1f486b; }
+    .status-badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
+    .status-done { background: #c8f0d1; color: #176b2c; }
+    .status-progress { background: #ffe5b4; color: #aa5b00; }
+    .status-blocked { background: #ffd9d9; color: #b12e2e; }
+    .status-pending { background: #e0e7ef; color: #3b5c7e; }
+    .expand-row { cursor: pointer; background-color: #fefcf5; transition: 0.1s; }
+    .expand-row:hover { background-color: #f8f2e3; }
+    .detail-row { background: #fafcff; display: none; }
+    .detail-row.show { display: table-row; }
+    .detail-cell { padding: 1rem; background: #f9fbfe; }
+    button { background: #eef2f7; border: none; padding: 0.5rem 1.1rem; border-radius: 40px; font-weight: 500; cursor: pointer; }
+    button.primary { background: #136b9c; color: white; }
+    .delete-btn { background: #fee2e2; color: #b91c1c; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 30px; }
+    .log-entry { background: white; padding: 0.8rem; border-radius: 1rem; margin-bottom: 0.7rem; border-left: 3px solid #2c8cbb; }
+    .blocker-card { background: white; border-radius: 1rem; padding: 1rem; margin-bottom: 0.8rem; border-left: 4px solid #ef4444; }
+    .priority-card { background: linear-gradient(135deg, #1a2a3a, #0f2b3d); color: white; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .priority-item { background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 1rem; margin-bottom: 0.5rem; }
+    footer { margin-top: 2rem; text-align: center; font-size: 0.75rem; color: #7c93ab; }
+    @media (max-width: 700px) { body { padding: 1rem; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-primary">⚡ Axentec × Robi</span>
+      <span class="badge">LBS Phase-2 | Updated 26 April 2026</span>
+      <span class="badge badge-warning">VPN: Request sent to Robi IT · Awaiting enablement</span>
+    </div>
+    <h1>📍 LBS Phase-2<br>Command Center</h1>
+    <div class="subhead">VPN tunnel request with Robi IT (in progress) · Callback URL target 4 May · UAT conditional May 3rd week</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="roadmap">🗺️ Roadmap</button>
+    <button class="tab-btn" data-tab="priority">🎯 Priority</button>
+    <button class="tab-btn" data-tab="actions">✅ Action Items</button>
+    <button class="tab-btn" data-tab="blockers">🚧 Blockers</button>
+    <button class="tab-btn" data-tab="progress">📝 Logs</button>
+  </div>
+
+  <!-- ROADMAP TAB -->
+  <div id="roadmap" class="tab-content active">
+    <div class="roadmap-container">
+      <div class="overall-progress-header">
+        <div><h3 style="margin-bottom:0.3rem;">🚀 Project to Go-Live</h3><p style="font-size:0.85rem;">Target: 90 days from start · UAT: May 3rd week (conditional)</p></div>
+        <div><div class="progress-bar-big" style="width:200px;"><div class="progress-fill" id="overallFill" style="width:0%"></div></div><div id="overallPercent" style="text-align:center;margin-top:5px;">0%</div></div>
+        <div class="eta-badge" id="etaDisplay">⏱️ Est. 35-45 days remaining</div>
+      </div>
+      <div class="timeline-grid" id="timelineSteps"></div>
+      <div class="critical-path" id="criticalPathBox"><strong>⚠️ Critical Path (Must resolve for UAT)</strong><div id="criticalPathList"></div></div>
+      <div class="stats-grid" id="roadmapStats"></div>
+    </div>
+  </div>
+
+  <!-- PRIORITY TAB -->
+  <div id="priority" class="tab-content">
+    <div class="priority-card"><h3>🎯 Top 3 Critical Items</h3><div id="topPriorities"></div></div>
+    <div class="stats-grid" id="priorityStats"></div>
+    <div style="background:white; border-radius:1.5rem; padding:1.5rem;"><h3>📋 Sequential Action Plan (By Importance)</h3><div id="actionSequence"></div></div>
+  </div>
+
+  <!-- ACTION ITEMS TAB -->
+  <div id="actions" class="tab-content">
+    <div style="margin-bottom:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;"><button id="addActionBtn" class="primary">+ Add Action Item</button><button id="exportCsvBtn">Export CSV</button></div>
+    <div style="overflow-x:auto;">
+      <table id="actionTable">
+        <thead><tr><th>Action Item</th><th>Owner</th><th>Status</th><th>Last Note</th><th>Last Updated</th><th></th></tr></thead>
+        <tbody id="actionTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BLOCKERS TAB -->
+  <div id="blockers" class="tab-content"><div id="blockersList"></div><button id="addBlockerBtn" class="primary" style="margin-top:1rem">+ Add Blocker</button></div>
+
+  <!-- LOGS TAB -->
+  <div id="progress" class="tab-content"><button id="addLogBtn" class="primary">+ Add Log</button><div id="logList" style="margin-top:1rem"></div></div>
+
+  <footer>Fully synced · Click any action row to edit · VPN S2S request with Robi IT (initiated) · SMSC IPs included in request</footer>
+</div>
+
+<script>
+  // ========== DATA MODEL - UPDATED 26 APRIL 2026 ==========
+  // CORRECTION: SMSC IPs and VPN tunnel request sent to Robi IT. Muhi is NOT the bottleneck.
+  let actionItems = [
+    { id: 0, item: "Weekly Status Meeting Schedule", owner: "PM (Irfan) / Z&Z", status: "Done", lastNote: "Confirmed: Every Monday 10:30-11:30 AM. Email + WhatsApp group for queries.", minefield: "", priority: 2, lastUpdated: "2026-04-26T10:00:00Z", gate: 0 },
+    { id: 1, item: "Z&Z Single Point of Contact Details", owner: "Z&Z", status: "Done", lastNote: "Operations: Razib Khan | PM: Rejaul Haque | Technical: Imtiaz Ahmed", minefield: "", priority: 2, lastUpdated: "2026-04-26T10:00:00Z", gate: 0 },
+    { id: 2, item: "Callback URL for API Response Routing", owner: "Z&Z", status: "In Progress", lastNote: "Target completion: 4 May. Testing phase: 10 May (subject to Axentec activities). CRITICAL PATH.", minefield: "Without callback URL, data flow from Z&Z platform to admin portal is incomplete", priority: 1, lastUpdated: "2026-04-26T10:00:00Z", gate: 2 },
+    { id: 3, item: "VM Host Details + IP for Asset Registration", owner: "Axentec cloud (Muhi)", status: "Action needed", lastNote: "Muhi must share VM host details and server IP with Robi IT to complete asset registration.", minefield: "Asset registration blocked until provided", priority: 1, lastUpdated: "2026-04-20T10:00:00Z", gate: 1 },
+    { id: 4, item: "Complete CIS Hardening (OS + DB + App)", owner: "Z&Z", status: "In Progress", lastNote: "CIS guidelines shared. Requires OS (Ubuntu), DB (PostgreSQL), AND Application layers hardening.", minefield: "Previously thought DB only — now all three layers required", priority: 1, lastUpdated: "2026-04-26T10:00:00Z", gate: 2 },
+    { id: 5, item: "Share CIS Guidelines Document", owner: "PM (Irfan)", status: "Done", lastNote: "CIS document shared with Z&Z.", minefield: "", priority: 3, lastUpdated: "2026-04-20T10:00:00Z", gate: 2 },
+    { id: 6, item: "Nginx Gateway (Network-level)", owner: "Z&Z", status: "Done", lastNote: "Confirmed live. Evidence provided.", minefield: "", priority: 3, lastUpdated: "2026-04-12T10:00:00Z", gate: 2 },
+    { id: 7, item: "Django Middleware (Application-level)", owner: "Z&Z", status: "Done", lastNote: "Completed. Delivery date confirmed.", minefield: "", priority: 3, lastUpdated: "2026-04-20T10:00:00Z", gate: 2 },
+    { id: 8, item: "Introduce Z&Z to Robi Windows Team (SSO)", owner: "PM (Irfan) + Robi IT (Sakib)", status: "Blocked", lastNote: "Robi Windows team must provide test Azure AD account for Z&Z to build SSO integration. Z&Z ready.", minefield: "Two-sided block — PM must facilitate introduction", priority: 1, lastUpdated: "2026-04-26T10:00:00Z", gate: 3 },
+    { id: 9, item: "Share API Credentials (Testbed + Prod)", owner: "Z&Z", status: "Pending", lastNote: "Required before UAT. Separate credentials for staging and production.", minefield: "", priority: 2, lastUpdated: "2026-04-20T10:00:00Z", gate: 3 },
+    { id: 10, item: "S2S VPN Tunnel Configuration", owner: "Robi IT (Tanmay)", status: "In Progress", lastNote: "Configuration request sent to Robi IT. SMSC IPs included. Awaiting Robi IT to enable IPsec tunnel.", minefield: "Waiting on Robi IT enablement", priority: 1, lastUpdated: "2026-04-26T14:00:00Z", gate: 1 },
+    { id: 11, item: "WAF and Monitoring Setup", owner: "Robi IT + Muhi", status: "Pending", lastNote: "Post-staging. Requires Muhi's cloud infrastructure support.", minefield: "", priority: 3, lastUpdated: "2026-04-20T10:00:00Z", gate: 4 },
+    { id: 12, item: "Share Deployment Readiness & UAT Timeline", owner: "Z&Z", status: "In Progress", lastNote: "UAT approximately scheduled for May 3rd week, provided all preceding steps and milestones are cleared.", minefield: "UAT date is CONDITIONAL", priority: 1, lastUpdated: "2026-04-26T10:00:00Z", gate: 4 },
+    { id: 13, item: "Gmail Conversion for Robi Play Store", owner: "Z&Z", status: "In Progress", lastNote: "Z&Z checking and will get back shortly. Product under Robi's Google account.", minefield: "2-week lead time for approval", priority: 2, lastUpdated: "2026-04-26T10:00:00Z", gate: 5 },
+    { id: 14, item: "Server Capacity Planning (5,000 users)", owner: "Z&Z / Axentec", status: "In Progress", lastNote: "Confirmed: 5,000 user target. Horizontal + vertical scaling supported.", minefield: "", priority: 2, lastUpdated: "2026-04-20T10:00:00Z", gate: 2 },
+    { id: 15, item: "SSO Requirements Clarified", owner: "Z&Z / Robi IT", status: "In Progress", lastNote: "Clarified: Robi domain users whitelisted in Z&Z DB + verified against Azure AD. Awaiting test account.", minefield: "Test Azure AD account missing", priority: 1, lastUpdated: "2026-04-26T10:00:00Z", gate: 3 }
+  ];
+  let progressLogs = [
+    { id: 0, timestamp: "2026-04-20", text: "Technical Coordination Meeting: Scaling confirmed (5,000 users). SSO clarified. CIS hardening expanded to OS+DB+App. Callback URL required." },
+    { id: 1, timestamp: "2026-04-26", text: "Z&Z Status Update: Weekly meeting confirmed Mondays 10:30-11:30 AM. Contacts provided. Callback URL target 4 May, testing until 10 May. UAT targeted May 3rd week (conditional)." },
+    { id: 2, timestamp: "2026-04-26", text: "VPN UPDATE: S2S VPN tunnel configuration request sent to Robi IT (Tanmay). SMSC IPs included in request. Awaiting Robi IT to enable the tunnel. Process initiated by PM." },
+    { id: 3, timestamp: "2026-04-26", text: "CRITICAL DEPENDENCY: UAT (May 3rd week) requires: Callback URL (4 May), VPN tunnel enabled by Robi IT, SSO test account, CIS hardening complete." }
+  ];
+  let nextId = 16, nextLogId = 4;
+
+  const gates = [
+    { id: 1, name: "Gate 1: Foundation Security (VPN + Asset Reg)", tasks: ["S2S VPN Tunnel Configuration", "VM Host Details + IP for Asset Registration"], estimatedDays: 7, order: 1 },
+    { id: 2, name: "Gate 2: Technical Architecture", tasks: ["Callback URL for API Response Routing", "Complete CIS Hardening (OS + DB + App)", "Server Capacity Planning (5,000 users)", "Nginx Gateway", "Django Middleware"], estimatedDays: 14, order: 2 },
+    { id: 3, name: "Gate 3: Identity & Access (SSO)", tasks: ["Introduce Z&Z to Robi Windows Team (SSO)", "Share API Credentials (Testbed + Prod)", "SSO Requirements Clarified"], estimatedDays: 7, order: 3 },
+    { id: 4, name: "Gate 4: Staging & Security Review", tasks: ["Share Deployment Readiness & UAT Timeline", "WAF and Monitoring Setup"], estimatedDays: 21, order: 4 },
+    { id: 5, name: "Gate 5: Go-Live & App Store", tasks: ["Gmail Conversion for Robi Play Store"], estimatedDays: 14, order: 5 }
+  ];
+
+  function saveData() { localStorage.setItem("lbs_action_items", JSON.stringify(actionItems)); localStorage.setItem("lbs_progress_logs", JSON.stringify(progressLogs)); }
+  function loadData() { const a = localStorage.getItem("lbs_action_items"); if(a) actionItems = JSON.parse(a); const l = localStorage.getItem("lbs_progress_logs"); if(l) progressLogs = JSON.parse(l); }
+  function updateTimestamp(item) { item.lastUpdated = new Date().toISOString(); }
+
+  function getGateCompletion() {
+    return gates.map(gate => {
+      const taskItems = gate.tasks.map(t => actionItems.find(a => a.item === t || a.item.includes(t.split(" ")[0]) || a.item.includes(t.substring(0,20)))).filter(Boolean);
+      const done = taskItems.filter(t => t && t.status === "Done").length;
+      const blocked = taskItems.some(t => t && t.status === "Blocked");
+      const inProgress = taskItems.some(t => t && (t.status === "In Progress" || t.status === "Action needed" || t.status === "Partial"));
+      let status = "pending";
+      if (done === gate.tasks.length && gate.tasks.length > 0) status = "completed";
+      else if (blocked) status = "blocked";
+      else if (inProgress || done > 0) status = "in-progress";
+      return { ...gate, completion: (done / gate.tasks.length) * 100, status, done, total: gate.tasks.length, taskItems };
+    });
+  }
+
+  function renderRoadmap() {
+    const gateProgress = getGateCompletion();
+    const totalCompletion = gateProgress.reduce((s,g) => s + g.completion, 0) / gateProgress.length;
+    document.getElementById("overallFill").style.width = totalCompletion + "%";
+    document.getElementById("overallPercent").innerHTML = Math.round(totalCompletion) + "%";
+    const remainingDays = gateProgress.filter(g=>g.status!=="completed").reduce((s,g)=> s + (g.status==="in-progress"?g.estimatedDays*0.6:g.estimatedDays),0);
+    document.getElementById("etaDisplay").innerHTML = `⏱️ Est. ${Math.max(14, Math.round(remainingDays))} days remaining (UAT target: May 3rd week)`;
+    
+    const timelineDiv = document.getElementById("timelineSteps");
+    timelineDiv.innerHTML = gateProgress.map(g => `
+      <div class="step-card ${g.status}" data-gate="${g.id}">
+        <div class="step-header" onclick="toggleGateDetail(${g.id})">
+          <div class="step-number">${g.order}</div>
+          <div class="step-info"><div class="step-title">${g.name}</div><div style="font-size:0.75rem;">${g.status === "completed" ? "✅ Completed" : (g.status === "blocked" ? "🚫 Blocked" : "🔄 In Progress")}</div></div>
+          <div>${Math.round(g.completion)}% · ${g.estimatedDays}d</div>
+        </div>
+        <div class="step-detail" id="gate-detail-${g.id}">
+          <div class="progress-bar-big" style="background:#e2edf7; margin:0.5rem 0;"><div class="progress-fill" style="width:${g.completion}%; background:#136b9c;"></div></div>
+          <ul class="task-list">${g.tasks.map(t => { const task = actionItems.find(a => a.item === t || a.item.includes(t.split(" ")[0])); let cls="pending"; if(task?.status==="Done") cls="done"; else if(task?.status==="Blocked") cls="blocked"; else if(task?.status==="In Progress" || task?.status==="Action needed") cls="progress"; return `<li class="task-item"><div class="task-status ${cls}">${cls==="done"?"✓":(cls==="blocked"?"!":"○")}</div><div><strong>${t}</strong><br><span style="font-size:0.75rem;">${task?.lastNote?.substring(0,55) || "Not started"} — ${task?.owner || "—"}</span></div></li>`; }).join("")}</ul>
+        </div>
+      </div>
+    `).join("");
+    
+    const criticalTasks = actionItems.filter(a => a.status === "Blocked" || (a.priority === 1 && a.status !== "Done"));
+    document.getElementById("criticalPathList").innerHTML = criticalTasks.slice(0,5).map(t => `<div>⚠️ <strong>${t.item}</strong> — ${t.minefield || "Critical path item"} (${t.owner})</div>`).join("") || "<div>✅ No critical blockers!</div>";
+    document.getElementById("roadmapStats").innerHTML = `<div class="stat-card"><div class="stat-number">${gateProgress.filter(g=>g.status==="completed").length}/${gates.length}</div><div class="stat-label">Gates Complete</div></div><div class="stat-card"><div class="stat-number">${actionItems.filter(a=>a.status==="Done").length}/${actionItems.length}</div><div class="stat-label">Tasks Done</div></div><div class="stat-card"><div class="stat-number">${actionItems.filter(a=>a.status==="Blocked").length}</div><div class="stat-label">Blocked</div></div>`;
+  }
+  window.toggleGateDetail = function(id) { const el = document.getElementById(`gate-detail-${id}`); if(el) el.classList.toggle("show"); };
+
+  function renderPriority() {
+    const sorted = [...actionItems].sort((a,b)=> (a.priority||3)-(b.priority||3));
+    const top3 = sorted.filter(i=>i.status!=="Done").slice(0,3);
+    document.getElementById("topPriorities").innerHTML = top3.map((i,idx)=>`<div class="priority-item"><strong>${idx+1}. ${i.item}</strong><br>${i.owner} | ${i.status}<br>${i.lastNote.substring(0,80)}</div>`).join("");
+    document.getElementById("actionSequence").innerHTML = sorted.filter(i=>i.status!=="Done").map((i,idx)=>`<div style="padding:0.5rem 0; border-bottom:1px solid #e9edf2;"><strong>${idx+1}.</strong> ${i.item} — ${i.owner} (${i.status})<br><span style="font-size:0.7rem;">${i.lastNote.substring(0,60)}</span></div>`).join("");
+    document.getElementById("priorityStats").innerHTML = `<div class="stat-card"><div class="stat-number">${actionItems.filter(i=>i.priority===1 && i.status!=="Done").length}</div><div class="stat-label">Critical Open</div></div><div class="stat-card"><div class="stat-number">${actionItems.filter(i=>i.status==="Blocked").length}</div><div class="stat-label">Blocked</div></div>`;
+  }
+
+  function renderActionTable() {
+    const tbody = document.getElementById("actionTableBody");
+    tbody.innerHTML = "";
+    actionItems.forEach((item, idx) => {
+      const row = tbody.insertRow();
+      row.classList.add("expand-row");
+      row.insertCell(0).innerText = item.item;
+      row.insertCell(1).innerText = item.owner;
+      let statusClass = item.status==="Done"?"status-done":(item.status==="Blocked"?"status-blocked":"status-progress");
+      row.insertCell(2).innerHTML = `<span class="status-badge ${statusClass}">${item.status}</span>`;
+      row.insertCell(3).innerText = item.lastNote.substring(0, 55);
+      row.insertCell(4).innerHTML = `<span style="font-size:0.7rem;">${new Date(item.lastUpdated).toLocaleDateString()}</span>`;
+      const delBtn = document.createElement("button");
+      delBtn.innerText = "🗑️";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Delete?")) { actionItems.splice(idx,1); saveData(); fullSync(); } };
+      row.insertCell(5).appendChild(delBtn);
+      
+      const detailRow = tbody.insertRow();
+      detailRow.classList.add("detail-row");
+      const detailCell = detailRow.insertCell(0);
+      detailCell.colSpan = 6;
+      detailCell.className = "detail-cell";
+      detailCell.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <select id="edit-status-${idx}" style="padding:6px; border-radius:20px;">${["Done","In Progress","Blocked","Not started","Action needed","Partial","Pending"].map(s => `<option ${item.status===s ? "selected" : ""}>${s}</option>`).join("")}</select>
+          <input type="text" id="edit-owner-${idx}" value="${item.owner.replace(/"/g, '&quot;')}" placeholder="Owner" style="padding:6px; border-radius:20px;">
+          <textarea id="edit-note-${idx}" rows="2" placeholder="Note">${item.lastNote}</textarea>
+          <input type="text" id="edit-minefield-${idx}" value="${item.minefield || ""}" placeholder="Minefield">
+          <button class="save-action-edit" data-idx="${idx}" style="background:#136b9c; color:white;">💾 Save</button>
+        </div>
+      `;
+      row.onclick = () => detailRow.classList.toggle("show");
+      
+      detailCell.querySelector(".save-action-edit").onclick = (e) => {
+        e.stopPropagation();
+        actionItems[idx].status = document.getElementById(`edit-status-${idx}`).value;
+        actionItems[idx].owner = document.getElementById(`edit-owner-${idx}`).value;
+        actionItems[idx].lastNote = document.getElementById(`edit-note-${idx}`).value;
+        actionItems[idx].minefield = document.getElementById(`edit-minefield-${idx}`).value;
+        updateTimestamp(actionItems[idx]);
+        saveData();
+        fullSync();
+        detailRow.classList.remove("show");
+      };
+    });
+  }
+
+  function renderBlockers() {
+    const blockers = actionItems.filter(i => i.status === "Blocked" || (i.minefield && i.status !== "Done"));
+    const container = document.getElementById("blockersList");
+    if(blockers.length === 0) { container.innerHTML = "<div class='log-entry'>🎉 No blockers!</div>"; return; }
+    container.innerHTML = blockers.map(b => `
+      <div class="blocker-card">
+        <strong>🚫 ${b.item}</strong><br>
+        ${b.lastNote}<br>
+        <span style="font-size:0.75rem;">⚠️ ${b.minefield || "Needs attention"} | Owner: ${b.owner}</span><br>
+        <button class="resolve-blocker-btn" data-item="${b.item}" style="margin-top:8px; background:#136b9c; color:white;">Mark Resolved</button>
+        <button class="edit-blocker-quick" data-item="${b.item}" style="margin-top:8px;">Edit in Actions</button>
+      </div>
+    `).join("");
+    document.querySelectorAll(".resolve-blocker-btn").forEach(btn => {
+      btn.onclick = () => {
+        const item = actionItems.find(i => i.item === btn.getAttribute("data-item"));
+        if(item && item.status === "Blocked") { item.status = "In Progress"; item.lastNote += " | Resolved " + new Date().toISOString().slice(0,10); updateTimestamp(item); saveData(); fullSync(); }
+      };
+    });
+    document.querySelectorAll(".edit-blocker-quick").forEach(btn => {
+      btn.onclick = () => { document.querySelector(".tab-btn[data-tab='actions']").click(); setTimeout(()=>{ document.querySelectorAll(".expand-row").forEach(r=>{ if(r.cells[0].innerText === btn.getAttribute("data-item")) r.click(); }); },100); };
+    });
+  }
+
+  function renderLogs() {
+    const container = document.getElementById("logList");
+    container.innerHTML = [...progressLogs].reverse().map(log => `<div class="log-entry"><strong>📅 ${log.timestamp}</strong><br>${log.text}</div>`).join("");
+  }
+
+  function addNewAction() { const n=prompt("Action item name:"); if(n){ actionItems.push({id:nextId++, item:n, owner:"PM", status:"Not started", lastNote:"New action", minefield:"", priority:3, lastUpdated:new Date().toISOString(), gate:3}); saveData(); fullSync(); } }
+  function addNewBlocker() { const n=prompt("Blocker name:"); if(n){ actionItems.push({id:nextId++, item:n, owner:"Unknown", status:"Blocked", lastNote:"Needs resolution", minefield:"Investigate", priority:1, lastUpdated:new Date().toISOString(), gate:3}); saveData(); fullSync(); } }
+  function addNewLog() { const t=prompt("Log entry:"); if(t){ progressLogs.push({id:nextLogId++, timestamp:new Date().toISOString().slice(0,10), text:t}); saveData(); renderLogs(); } }
+  function exportCSV() { let csv="Item,Owner,Status,LastNote\n"+actionItems.map(i=>`"${i.item}","${i.owner}","${i.status}","${i.lastNote}"`).join("\n"); const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="lbs_actions.csv"; a.click(); }
+
+  function fullSync() { renderRoadmap(); renderPriority(); renderActionTable(); renderBlockers(); renderLogs(); }
+
+  function init() {
+    loadData();
+    fullSync();
+    document.getElementById("addActionBtn")?.addEventListener("click", addNewAction);
+    document.getElementById("addBlockerBtn")?.addEventListener("click", addNewBlocker);
+    document.getElementById("addLogBtn")?.addEventListener("click", addNewLog);
+    document.getElementById("exportCsvBtn")?.addEventListener("click", exportCSV);
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+        document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
+        if(btn.getAttribute("data-tab")==="actions") renderActionTable();
+        if(btn.getAttribute("data-tab")==="blockers") renderBlockers();
+        if(btn.getAttribute("data-tab")==="progress") renderLogs();
+        if(btn.getAttribute("data-tab")==="priority") renderPriority();
+        if(btn.getAttribute("data-tab")==="roadmap") renderRoadmap();
+      });
+    });
+  }
+  init();
+</script>
+</body>
+</html>
